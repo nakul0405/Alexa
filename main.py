@@ -75,7 +75,7 @@ def get_openrouter_reply(user_id, user_input):
 
         messages = [system_prompt] + past + [{"role": "user", "content": user_input}]
         data = {
-            "model": "mistralai/mistral-7b-instruct",
+            "model": "moonshotai/kimi-k2:free",
             "messages": messages,
             "temperature": 0.9,
             "top_p": 1
