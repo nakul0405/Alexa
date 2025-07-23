@@ -55,7 +55,7 @@ def forward_to_private_log(user, user_input, bot_reply):
     except Exception as e:
         print("❌ Error forwarding:", e)
 
-# ✅ OpenRouter integration
+# ✅ OpenRouter integration with debug logging
 def get_openrouter_reply(user_id, user_input):
     try:
         headers = {
@@ -81,8 +81,18 @@ def get_openrouter_reply(user_id, user_input):
             "top_p": 1
         }
 
+        # 🐞 Debug logs
+        print("📦 Payload being sent:")
+        print(json.dumps(data, indent=2))
+        print("🔐 Key starts with:", OPENROUTER_API_KEY[:10] + "...")
+
         res = requests.post(url, headers=headers, json=data)
-        res.raise_for_status()
+
+        if res.status_code != 200:
+            print(f"❌ Status Code: {res.status_code}")
+            print("❌ Response:", res.text)
+            return "🥺 Alexa thoda confuse ho gayi hai. Kuch galti ho gayi hai OpenRouter ke side se."
+
         reply = res.json()['choices'][0]['message']['content']
 
         chat_history[user_id] = chat_history.get(user_id, []) + [
@@ -138,7 +148,7 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         print("❌ Error in /info command:", e)
 
-# ---------------------- Message Handler -----------------------
+# ---------------------- MESSAGE HANDLER -----------------------
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
