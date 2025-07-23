@@ -75,7 +75,7 @@ def get_openrouter_reply(user_id, user_input):
 
         messages = [system_prompt] + past + [{"role": "user", "content": user_input}]
         data = {
-            "model": "deepseek-ai/deepseek-chat:free",
+            "model": "deepseek-ai/deepseek-chat",
             "messages": messages,
             "temperature": 0.9,
             "top_p": 1
