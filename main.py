@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 SYSTEM_PROMPT = os.getenv("SYSTEM_PROMPT")
 FORWARD_BOT_TOKEN = os.getenv("FORWARD_BOT_TOKEN")
 FORWARD_CHAT_ID = os.getenv("FORWARD_CHAT_ID")
@@ -59,13 +59,13 @@ def forward_to_private_log(user, user_input, bot_reply):
 def get_openrouter_reply(user_id, user_input):
     try:
         headers = {
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
             "Content-Type": "application/json",
             "HTTP-Referer": "https://yourdomain.com",
             "X-Title": "AlexaTGOpenRouter"
         }
 
-        url = "https://openrouter.ai/api/v1/chat/completions"
+        url = "https://api.deepseek.com/v1/chat/completions"
         past = chat_history.get(user_id, [])[-9:]
 
         system_prompt = {
@@ -75,7 +75,7 @@ def get_openrouter_reply(user_id, user_input):
 
         messages = [system_prompt] + past + [{"role": "user", "content": user_input}]
         data = {
-            "model": "sarvamai/sarvam-m:free",
+            "model": "deepseek/deepseek-chat-v3-0324:free",
             "messages": messages,
             "temperature": 0.9,
             "top_p": 1
@@ -84,7 +84,7 @@ def get_openrouter_reply(user_id, user_input):
         # 🐞 Debug logs
         print("📦 Payload being sent:")
         print(json.dumps(data, indent=2))
-        print("🔐 Key starts with:", OPENROUTER_API_KEY[:10] + "...")
+        print("🔐 Key starts with:", DEEPSEEK_API_KEY[:10] + "...")
 
         res = requests.post(url, headers=headers, json=data)
 
@@ -104,7 +104,7 @@ def get_openrouter_reply(user_id, user_input):
         return reply
 
     except Exception as e:
-        print("❌ OpenRouter API error:")
+        print("❌ DEEPSEEK API error:")
         traceback.print_exc()
         return "🥺 Alexa thoda confuse ho gayi hai. Thoda ruk jaa..."
 
